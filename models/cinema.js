@@ -1,0 +1,40 @@
+const mongoose = require('mongoose')
+const { search } = require('../routes/customers')
+
+const {Schema} = mongoose
+const cinemaSchema = new mongoose.Schema({
+
+name:{
+    type: String,
+    required:true
+},
+startAt: {
+    type: String,
+    required: true,
+  },
+
+ticketPrice:{
+    type: Number,
+    required: true
+},
+city:{
+     type:String,
+     required:true,
+     lowercase:true
+},
+seats:{
+    type:[Schema.Types.Mixed],
+    required:true
+},
+seatsAvailability:{
+    type:Number,
+    required:true
+},
+movieId:{
+    type: Schema.Types.ObjectId,
+    ref: 'Movie',
+}
+})
+
+const Cinema = mongoose.model('Cinema',cinemaSchema)
+module.exports=Cinema
