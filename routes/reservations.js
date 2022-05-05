@@ -33,7 +33,8 @@ router.get('/details/:userId',async(req,res)=>{
           total:item.total,
           seats:item.seats,
           movieName:movie.title,
-          cinemaName:cinema.name
+          cinemaName:cinema.name,
+          startAt:cinema.startAt
       }
      list.push(obj)
     }
@@ -44,15 +45,17 @@ router.get('/details/:userId',async(req,res)=>{
     }
     
 })
-router.post('/book/:theaterId/:movieId/:userId/:startTime',async(req,res)=>{
-    const cinemas= await Cinema.find({$and:[{'_id':req.params.theaterId},{movieId:req.params.movieId},{'startAt':req.params.startTime}]})
+router.post('/book/:theaterId/:userId',async(req,res)=>{
+    const cinemas= await Cinema.find({'_id':req.params.theaterId})
      let ticketPrice
      const userId=req.params.userId
-     const movieId=req.params.movieId
+     let movieId
      const cinemaId=req.params.theaterId
-     const startAt=req.params.startTime
+     let startAt
      for(const item of cinemas){
         ticketPrice=item.ticketPrice
+        movieId=item.movieId
+        startAt=item.startAt
      }
     const seats=req.body.seats
     const total=seats*ticketPrice
@@ -62,7 +65,7 @@ router.post('/book/:theaterId/:movieId/:userId/:startTime',async(req,res)=>{
         ticketPrice:ticketPrice,
         seats:seats,
         total:total,
-        movieId:req.params.movieId,
+        movieId:movieId,
         cinemaId:req.params.theaterId,
         userId:req.params.userId
     })
