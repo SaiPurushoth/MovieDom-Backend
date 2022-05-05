@@ -36,6 +36,9 @@ releaseDate: {
     type: Date,
     required: true,
   },
+  image:{
+      type:String,
+  }
 })
 
 const Movie = mongoose.model('Movie',movieSchema)

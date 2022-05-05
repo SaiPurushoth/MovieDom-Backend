@@ -3,7 +3,10 @@ const { search } = require('../routes/customers')
 
 const {Schema} = mongoose
 const cinemaSchema = new mongoose.Schema({
-
+date:{
+    type:String,
+    required:true
+},
 name:{
     type: String,
     required:true

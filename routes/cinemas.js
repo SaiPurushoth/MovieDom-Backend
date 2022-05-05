@@ -27,8 +27,11 @@ router.get('/',async(req,res)=>{
 })
 router.get('/list',async(req,res)=>{
     try{
+        let date=new Date().toISOString()
+        date=date.substring(0,10)
+
         const city=req.params.city
-       const cinema = await Cinema.find()
+       const cinema = await Cinema.find({date})
        cinema.sort(compare)
        let theaters=[]
        for(const item of cinema){
@@ -40,7 +43,8 @@ router.get('/list',async(req,res)=>{
                movieId:movie.id,
                movieName:movie.title,
                city:item.city,
-               startAt:item.startAt
+               startAt:item.startAt,
+               image:movie.image
 
            }
            theaters.push(theater)
@@ -89,6 +93,8 @@ router.post('/register/:id',async(req,res)=>{
 
 
     router.get('/search/:city',async(req,res)=>{
+
+ 
         try{
             const city=req.params.city
            const cinema = await Cinema.find({city})
@@ -100,11 +106,11 @@ router.post('/register/:id',async(req,res)=>{
                 theaterId:item.id,
                 theaterName:item.name,
                 seatsAvailability:item.seatsAvailability,
-                moveId:movie.id,
+                movieId:movie.id,
                 movieName:movie.title,
                 city:item.city,
-                startAt:item.startAt
-
+                startAt:item.startAt,
+                image:movie.image
 
                }
                theaters.push(theater)
@@ -118,13 +124,85 @@ router.post('/register/:id',async(req,res)=>{
         catch(err){
             res.send('error' + err)
         }
+
         
     }) 
 
 
+    router.get('/search/:city/:date',async(req,res)=>{
+
+ 
+        try{
+            const city=req.params.city
+            const date=req.params.date
+           const cinema = await Cinema.find({$and:[{'city':city},{'date':date}]})
+           cinema.sort(compare)
+           let theaters=[]
+           for(const item of cinema){
+            const movie=await Movie.findById(item.movieId)
+               let theater={
+                theaterId:item.id,
+                theaterName:item.name,
+                seatsAvailability:item.seatsAvailability,
+                movieId:movie.id,
+                movieName:movie.title,
+                city:item.city,
+                startAt:item.startAt,
+                image:movie.image
+
+               }
+               theaters.push(theater)
+              
+           } 
+           
+
+           res.json(theaters)
+
+        }
+        catch(err){
+            res.send('error' + err)
+        }
+
+        
+    }) 
 
 
+    router.get('/search//:date',async(req,res)=>{
 
+ 
+        try{
+            const city=req.params.city
+            const date=req.params.date
+           const cinema = await Cinema.find({'date':date})
+           cinema.sort(compare)
+           let theaters=[]
+           for(const item of cinema){
+            const movie=await Movie.findById(item.movieId)
+               let theater={
+                theaterId:item.id,
+                theaterName:item.name,
+                seatsAvailability:item.seatsAvailability,
+                movieId:movie.id,
+                movieName:movie.title,
+                city:item.city,
+                startAt:item.startAt,
+                image:movie.image
+
+               }
+               theaters.push(theater)
+              
+           } 
+           
+
+           res.json(theaters)
+
+        }
+        catch(err){
+            res.send('error' + err)
+        }
+
+        
+    }) 
 
 
 
