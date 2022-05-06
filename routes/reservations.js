@@ -58,7 +58,7 @@ router.post('/book/:theaterId/:userId',async(req,res)=>{
         startAt=item.startAt
      }
     const seats=req.body.seats
-    const total=seats*ticketPrice
+    const total=seats.length*ticketPrice
     const reserve=new Reservation (
     {
         date:req.body.date,
@@ -72,9 +72,9 @@ router.post('/book/:theaterId/:userId',async(req,res)=>{
     try{
     const r1= await reserve.save()
         for(const item of cinemas){
-            if(item.seatsAvailability>seats)
+            if(item.seatsAvailability>seats.length)
             {
-            item.seatsAvailability=item.seatsAvailability-seats;
+            item.seatsAvailability=item.seatsAvailability-seats.length;
             const r2=await item.save()
             }
             else{
@@ -106,5 +106,27 @@ router.post('/book/:theaterId/:userId',async(req,res)=>{
     }
     
     })
+
+
+    router.get('/booked/:theaterId',async(req,res)=>{
+        try{
+           const reserve = await Reservation.find({'cinemaId':req.params.theaterId})
+           let list=[]
+           for(let item of reserve)
+           {
+            for(let chair of item.seats )
+            {
+                list.push(chair)
+            }
+ 
+        }
+          res.send(list)
+        }
+        catch(err){
+            res.send('error' + err)
+        }
+        
+    })
+
 
     module.exports=router

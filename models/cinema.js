@@ -29,6 +29,14 @@ seats:{
     type:[Schema.Types.Mixed],
     required:true
 },
+rows:{
+    type:[Schema.Types.Mixed],
+    required:true
+},
+columns:{
+    type:[Schema.Types.Mixed],
+    required:true
+},
 seatsAvailability:{
     type:Number,
     required:true

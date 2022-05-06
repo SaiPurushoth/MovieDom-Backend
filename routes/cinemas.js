@@ -45,8 +45,9 @@ router.get('/list',async(req,res)=>{
                city:item.city,
                startAt:item.startAt,
                image:movie.image,
-               ticketPrice:item.ticketPrice
-
+               ticketPrice:item.ticketPrice,
+               rows:item.rows,
+               columns:item.columns
 
            }
            theaters.push(theater)
@@ -113,7 +114,9 @@ router.post('/register/:id',async(req,res)=>{
                 city:item.city,
                 startAt:item.startAt,
                 image:movie.image,
-                ticketPrice:item.ticketPrice
+                ticketPrice:item.ticketPrice,
+                rows:item.rows,
+                columns:item.columns
 
                }
                theaters.push(theater)
@@ -152,7 +155,9 @@ router.post('/register/:id',async(req,res)=>{
                 city:item.city,
                 startAt:item.startAt,
                 image:movie.image,
-                ticketPrice:item.ticketPrice
+                ticketPrice:item.ticketPrice,
+                rows:item.rows,
+                columns:item.columns
 
                }
                theaters.push(theater)
@@ -191,7 +196,9 @@ router.post('/register/:id',async(req,res)=>{
                 city:item.city,
                 startAt:item.startAt,
                 image:movie.image,
-                ticketPrice:item.ticketPrice
+                ticketPrice:item.ticketPrice,
+                rows:item.rows,
+                columns:item.columns
 
                }
                theaters.push(theater)
