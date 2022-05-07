@@ -3,7 +3,7 @@ const express = require('express')
 const router = express.Router()
 
 const User= require('../models/customer')
-
+const  jwt= require('jsonwebtoken')
 router.get('/',async(req,res)=>{
     try{
        const user = await User.find()
@@ -18,6 +18,7 @@ router.get('/',async(req,res)=>{
 
 
 router.post('/register',async(req,res)=>{
+    const email=req.body.email
     const user=new User(
     {
     name:req.body.name,
@@ -26,9 +27,20 @@ router.post('/register',async(req,res)=>{
     phone:req.body.phone  
     })
     try{
-      const u1= await user.save()
-
-    res.json(u1)
+      const us=await User.find({email})
+      let payload={
+        subject:us._id
+       }
+       let token=jwt.sign(payload,'secretkey')
+       for(let item of us)
+       {
+            id=item._id 
+       }
+       var obj={
+          id:id,
+          token:token
+       }
+       res.json(obj)
     }catch(err)
     {
         res.send("already a user");
@@ -41,8 +53,21 @@ router.post('/register',async(req,res)=>{
   try{
     const user = await User.findByCredentials(req.body.email,req.body.password);
     const email=req.body.email
-    const us=await User.find({email})
-    res.json(us)
+    let us=await User.find({email})
+    let id
+    let payload={
+     subject:us._id
+    }
+    let token=jwt.sign(payload,'secretkey')
+    for(let item of us)
+    {
+         id=item._id 
+    }
+    var obj={
+       id:id,
+       token:token
+    }
+    res.json(obj)
   }catch(err)
   {
 
@@ -61,6 +86,7 @@ router.post('/register',async(req,res)=>{
      user.password=req.body.password
      user.phone=req.body.phone
      const u1= await user.save()
+
      res.json(u1)
      }
      catch(err){

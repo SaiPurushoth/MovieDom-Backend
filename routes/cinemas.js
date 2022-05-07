@@ -1,9 +1,25 @@
 const express = require('express')
 
 const router = express.Router()
-
+const  jwt= require('jsonwebtoken')
 const Cinema= require('../models/cinema')
 const Movie = require('../models/movie')
+function verifytoken(req,res,next){
+    if(!req.headers.authorization){
+        return req.status(401).send('unauthorized user')
+    }
+    let token=req.headers.authorization.split(' ')[1]
+    if(token==='null'){
+        return res.status(401).send('unauthorized user')
+    }
+    let payload = jwt.verify(token,'secretkey')
+    if(!payload){
+        return res.status(401).send('unauthorized user')
+    }
+    req.userId= payload.subject
+    next()
+}
+
 
 function compare( a, b ) {
     if ( a.seatsAvailability > b.seatsAvailability ){
@@ -25,7 +41,7 @@ router.get('/',async(req,res)=>{
     }
     
 })
-router.get('/list',async(req,res)=>{
+router.get('/list',verifytoken,async(req,res)=>{
     try{
         let date=new Date().toISOString()
         date=date.substring(0,10)
@@ -63,7 +79,7 @@ router.get('/list',async(req,res)=>{
     }
 })
 
-router.get('/:id',async(req,res)=>{
+router.get('/:id',verifytoken,async(req,res)=>{
     try{
        const cinema = await Cinema.findById(req.params.id)
        res.json(cinema)
@@ -73,7 +89,7 @@ router.get('/:id',async(req,res)=>{
     }
     
 })
-router.post('/register/:id',async(req,res)=>{
+router.post('/register/:id',verifytoken,async(req,res)=>{
     const cinema=new Cinema(
     {
         name:req.body.name,
@@ -95,7 +111,7 @@ router.post('/register/:id',async(req,res)=>{
     })
 
 
-    router.get('/search/:city',async(req,res)=>{
+    router.get('/search/:city',verifytoken,async(req,res)=>{
 
  
         try{
@@ -135,7 +151,7 @@ router.post('/register/:id',async(req,res)=>{
     }) 
 
 
-    router.get('/search/:city/:date',async(req,res)=>{
+    router.get('/search/:city/:date',verifytoken,async(req,res)=>{
 
  
         try{
@@ -176,7 +192,7 @@ router.post('/register/:id',async(req,res)=>{
     }) 
 
 
-    router.get('/search//:date',async(req,res)=>{
+    router.get('/search//:date',verifytoken,async(req,res)=>{
 
  
         try{

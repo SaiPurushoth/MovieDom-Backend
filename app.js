@@ -1,6 +1,8 @@
 const express = require('express')
 var bodyParser = require('body-parser')
 const mongoose = require('mongoose')
+
+const  jwt= require('jsonwebtoken')
 const url ='mongodb://localhost/Moviedom'
 mongoose.connect(url)
 const con = mongoose.connection
@@ -24,6 +26,9 @@ app.use('/cinemas',cinemaRouters)
 
 const reservationRouters =  require('./routes/reservations')
 app.use('/reservations',reservationRouters)
+
+
+
 
 con.on('open',()=>{
     console.log('connected')

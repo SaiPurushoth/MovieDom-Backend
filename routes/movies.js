@@ -2,6 +2,22 @@ const express = require('express')
 
 const router = express.Router()
 const Movie= require('../models/movie')
+const  jwt= require('jsonwebtoken')
+function verifytoken(req,res,next){
+    if(!req.headers.authorization){
+        return req.status(401).send('unauthorized user')
+    }
+    let token=req.headers.authorization.split(' ')[1]
+    if(token==='null'){
+        return res.status(401).send('unauthorized user')
+    }
+    let payload = jwt.verify(token,'secretkey')
+    if(!payload){
+        return res.status(401).send('unauthorized user')
+    }
+    req.userId= payload.subject
+    next()
+}
 
 router.get('/',async(req,res)=>{
     try{
@@ -14,7 +30,7 @@ router.get('/',async(req,res)=>{
     
 })
 
-router.get('/details/:id',async(req,res)=>{
+router.get('/details/:id',verifytoken,async(req,res)=>{
     try{
        const movie = await Movie.findById(req.params.id)
        res.json(movie)
@@ -25,7 +41,7 @@ router.get('/details/:id',async(req,res)=>{
     
 })
 
-router.post('/register',async(req,res)=>{
+router.post('/register',verifytoken,async(req,res)=>{
     const movie=new Movie(
     {
     title:req.body.title,
@@ -47,7 +63,7 @@ router.post('/register',async(req,res)=>{
     
     })
 
-    router.patch('/update/:id',async(req,res)=>{
+    router.patch('/update/:id',verifytoken,async(req,res)=>{
         try{
         const movie =  await Movie.findById(req.params.id)
         

@@ -3,11 +3,25 @@ const express = require('express')
 const Cinema = require('../models/cinema')
 const User = require('../models/customer')
 const Movie = require('../models/movie')
-
+const  jwt= require('jsonwebtoken')
 const router = express.Router()
 
 const Reservation= require('../models/reservation')
-
+function verifytoken(req,res,next){
+    if(!req.headers.authorization){
+        return req.status(401).send('unauthorized user')
+    }
+    let token=req.headers.authorization.split(' ')[1]
+    if(token==='null'){
+        return res.status(401).send('unauthorized user')
+    }
+    let payload = jwt.verify(token,'secretkey')
+    if(!payload){
+        return res.status(401).send('unauthorized user')
+    }
+    req.userId= payload.subject
+    next()
+}
 
 router.get('/',async(req,res)=>{
     try{
@@ -20,7 +34,7 @@ router.get('/',async(req,res)=>{
     
 })
 
-router.get('/details/:userId',async(req,res)=>{
+router.get('/details/:userId',verifytoken,async(req,res)=>{
     try{
        const reserve = await Reservation.find({'userId':req.params.userId})
        let list=[]
@@ -45,7 +59,7 @@ router.get('/details/:userId',async(req,res)=>{
     }
     
 })
-router.post('/book/:theaterId/:userId',async(req,res)=>{
+router.post('/book/:theaterId/:userId',verifytoken,async(req,res)=>{
     const cinemas= await Cinema.find({'_id':req.params.theaterId})
      let ticketPrice
      const userId=req.params.userId
@@ -108,7 +122,7 @@ router.post('/book/:theaterId/:userId',async(req,res)=>{
     })
 
 
-    router.get('/booked/:theaterId',async(req,res)=>{
+    router.get('/booked/:theaterId',verifytoken,async(req,res)=>{
         try{
            const reserve = await Reservation.find({'cinemaId':req.params.theaterId})
            let list=[]
