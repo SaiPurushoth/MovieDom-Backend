@@ -27,11 +27,12 @@ router.post('/register',async(req,res)=>{
     phone:req.body.phone  
     })
     try{
+       const u1=await user.save()
       const us=await User.find({email})
       let payload={
         subject:us._id
        }
-       let token=jwt.sign(payload,'secretkey')
+       let token=jwt.sign(payload,'secretkey',{expiresIn:'1h'})
        for(let item of us)
        {
             id=item._id 
@@ -58,7 +59,7 @@ router.post('/register',async(req,res)=>{
     let payload={
      subject:us._id
     }
-    let token=jwt.sign(payload,'secretkey')
+    let token=jwt.sign(payload,'secretkey',{expiresIn:'1h'})
     for(let item of us)
     {
          id=item._id 

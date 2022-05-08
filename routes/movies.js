@@ -41,7 +41,7 @@ router.get('/details/:id',verifytoken,async(req,res)=>{
     
 })
 
-router.post('/register',verifytoken,async(req,res)=>{
+router.post('/register',async(req,res)=>{
     const movie=new Movie(
     {
     title:req.body.title,
