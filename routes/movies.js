@@ -29,6 +29,22 @@ router.get('/',async(req,res)=>{
     }
     
 })
+router.get('/list',async(req,res)=>{
+    try{
+       const movie = await Movie.find()
+       list=[]
+       for(let item of movie)
+       {
+
+          list.push(item.title)
+       }
+       res.json(list)
+    }
+    catch(err){
+        res.send('error' + err)
+    }
+    
+})
 
 router.get('/details/:id',verifytoken,async(req,res)=>{
     try{

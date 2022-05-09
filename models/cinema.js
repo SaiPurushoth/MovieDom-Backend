@@ -44,6 +44,7 @@ seatsAvailability:{
 movieId:{
     type: Schema.Types.ObjectId,
     ref: 'Movie',
+    required:true
 }
 })
 

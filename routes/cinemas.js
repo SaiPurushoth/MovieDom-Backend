@@ -89,16 +89,27 @@ router.get('/:id',verifytoken,async(req,res)=>{
     }
     
 })
-router.post('/register/:id',verifytoken,async(req,res)=>{
+router.post('/register',verifytoken,async(req,res)=>{
+    let title=req.body.movie
+    const item=await Movie.findOne({title})
+    let rows=req.body.rows
+    rows=rows.replace(/\[|\]/g,'').split(',')
+    let columns=req.body.columns
+    columns=columns.replace(/\[|\]/g,'').split(',')
+    const seats=rows.length * columns.length
+
     const cinema=new Cinema(
     {
         name:req.body.name,
         ticketPrice:req.body.ticketPrice,
         city:req.body.city,
-        seats:req.body.seats,
-        seatsAvailability:req.body.seatsAvailability,
-        movieId:req.params.id,
-        startAt:req.body.startAt
+        seats:seats,
+        seatsAvailability:seats,
+        movieId:item.id,
+        startAt:req.body.startAt,
+        date:req.body.date,
+        rows:rows,
+        columns:columns
     })
     try{
       const c1= await cinema.save()
