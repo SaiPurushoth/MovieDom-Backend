@@ -52,7 +52,8 @@ router.post('/register',async(req,res)=>{
     duration:req.body.duration, 
     cast:req.body.cast, 
     releaseDate:req.body.releaseDate, 
-    })
+    image:req.body.image 
+   })
     try{
       const m1= await movie.save()
       res.json(m1)

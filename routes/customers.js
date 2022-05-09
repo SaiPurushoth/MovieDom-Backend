@@ -14,7 +14,26 @@ router.get('/',async(req,res)=>{
     }
     
 })
-
+router.get('/list',async(req,res)=>{
+   try{
+      const user = await User.find({'role':'guest'})
+      list=[]
+      for(let item of user)
+      {
+         let obj={
+            name:item.name,
+            email:item.email,
+            phone:item.phone
+         }
+         list.push(obj)
+      }
+      res.json(list)
+   }
+   catch(err){
+       res.send('error' + err)
+   }
+   
+})
 
 
 router.post('/register',async(req,res)=>{
@@ -29,6 +48,8 @@ router.post('/register',async(req,res)=>{
     try{
        const u1=await user.save()
       const us=await User.find({email})
+      let id
+      let role
       let payload={
         subject:us._id
        }
@@ -36,9 +57,11 @@ router.post('/register',async(req,res)=>{
        for(let item of us)
        {
             id=item._id 
+            role=item.role
        }
        var obj={
           id:id,
+          role:role,
           token:token
        }
        res.json(obj)
@@ -56,16 +79,20 @@ router.post('/register',async(req,res)=>{
     const email=req.body.email
     let us=await User.find({email})
     let id
+    let role
     let payload={
      subject:us._id
     }
     let token=jwt.sign(payload,'secretkey',{expiresIn:'1h'})
+
     for(let item of us)
     {
-         id=item._id 
+         id=item._id ,
+         role=item.role
     }
     var obj={
        id:id,
+       role:role,
        token:token
     }
     res.json(obj)

@@ -20,7 +20,8 @@ const customerSchema = new mongoose.Schema(
     role:{
         type:String,
         default:'guest',
-        enum:['guest','admin']
+        enum:['guest','admin'],
+        loadClass:true
     },
     phone:{
         type:String,
