@@ -45,7 +45,10 @@ movieId:{
     type: Schema.Types.ObjectId,
     ref: 'Movie',
     required:true
-}
+},
+  image:{
+      type:String,
+  }
 })
 
 const Cinema = mongoose.model('Cinema',cinemaSchema)
