@@ -5,14 +5,24 @@ const router = express.Router()
 const User= require('../models/customer')
 const  jwt= require('jsonwebtoken')
 router.get('/',async(req,res)=>{
-    try{
-       const user = await User.find()
-       res.json(user)
-    }
-    catch(err){
-        res.send('error' + err)
-    }
-    
+   try{
+      const user = await User.find()
+      res.json(user)
+   }
+   catch(err){
+       res.send('error' + err)
+   }
+   
+})
+router.get('/one/:id',async(req,res)=>{
+   try{
+      const user = await User.findById(req.params.id)
+      res.json(user)
+   }
+   catch(err){
+       res.send('error' + err)
+   }
+   
 })
 router.get('/list',async(req,res)=>{
    try{

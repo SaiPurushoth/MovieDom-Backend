@@ -31,9 +31,11 @@ function compare( a, b ) {
     return 0;
   }
 
-router.get('/',async(req,res)=>{
+  router.get('/',async(req,res)=>{
     try{
        const cinema = await Cinema.find()
+
+
        res.json(cinema)
     }
     catch(err){
@@ -41,6 +43,35 @@ router.get('/',async(req,res)=>{
     }
     
 })
+
+router.get('/all',async(req,res)=>{
+    try{
+       const cinema = await Cinema.find()
+       list=[]
+       for(let item of cinema){
+           const movie=await Movie.findById(item.movieId)
+    var obj={
+      id:item._id,
+      name:item.name,
+      city:item.city,
+    startAt:item.startAt,
+    ticketPrice:item.ticketPrice,
+    seats:item.seats,
+    movieName:movie.title
+    }
+    list.push(obj)
+       }
+
+       res.json(list)
+    }
+    catch(err){
+        res.send('error' + err)
+    }
+    
+})
+
+
+
 router.get('/list/:movieId',verifytoken,async(req,res)=>{
     try{
         const movieId=req.params.movieId
@@ -89,6 +120,28 @@ router.get('/:id',verifytoken,async(req,res)=>{
     }
     
 })
+
+router.patch('/update/:id',async(req,res)=>{
+    try{
+    const cinema =  await Cinema.findById(req.params.id)
+
+    cinema.name=req.body.name,
+    cinema.city=req.body.city,
+    cinema.ticketPrice=req.body.ticketPrice,
+    cinema.rows=req.body.rows,
+    cinema.columns=req.body.columns,
+    cinema.movie=req.body.movie,
+    cinema.startAt=req.body.startAt,
+    cinema.date=req.body.date,
+    cinema.image=req.body.image
+    const c1= await cinema.save()
+
+    res.json(c1)
+    }
+    catch(err){
+       res.send("Enter correct details");
+    }
+})
 router.post('/register',verifytoken,async(req,res)=>{
     let title=req.body.movie
     const item=await Movie.findOne({title})
@@ -109,7 +162,8 @@ router.post('/register',verifytoken,async(req,res)=>{
         startAt:req.body.startAt,
         date:req.body.date,
         rows:rows,
-        columns:columns
+        columns:columns,
+        image:req.body.image
     })
     try{
       const c1= await cinema.save()
