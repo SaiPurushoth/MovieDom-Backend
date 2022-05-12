@@ -34,8 +34,6 @@ function compare( a, b ) {
   router.get('/',async(req,res)=>{
     try{
        const cinema = await Cinema.find()
-
-
        res.json(cinema)
     }
     catch(err){
@@ -124,16 +122,23 @@ router.get('/:id',verifytoken,async(req,res)=>{
 router.patch('/update/:id',async(req,res)=>{
     try{
     const cinema =  await Cinema.findById(req.params.id)
-
+    let title=req.body.movie
+    const item=await Movie.findOne({title})
+    let rows=req.body.rows
+    rows=rows.replace(/\[|\]/g,'').split(',')
+    let columns=req.body.columns
+    columns=columns.replace(/\[|\]/g,'').split(',')
+    const seats=rows.length * columns.length
     cinema.name=req.body.name,
     cinema.city=req.body.city,
     cinema.ticketPrice=req.body.ticketPrice,
-    cinema.rows=req.body.rows,
-    cinema.columns=req.body.columns,
+    cinema.rows=rows,
+    cinema.columns=columns,
     cinema.movie=req.body.movie,
     cinema.startAt=req.body.startAt,
     cinema.date=req.body.date,
     cinema.image=req.body.image
+    cinema.seats=seats
     const c1= await cinema.save()
 
     res.json(c1)
