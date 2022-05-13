@@ -55,7 +55,10 @@ router.get('/all',async(req,res)=>{
     startAt:item.startAt,
     ticketPrice:item.ticketPrice,
     seats:item.seats,
-    movieName:movie.title
+    movieName:movie.title,
+    image:item.image,
+    rows:item.rows,
+    columns:item.columns
     }
     list.push(obj)
        }
