@@ -92,6 +92,7 @@ router.post('/register',async(req,res)=>{
         movie.description=req.body.description
         movie.duration=req.body.duration
         movie.releaseDate=req.body.releaseDate
+        movie.image=req.body.image
         
 
         const u1= await movie.save()

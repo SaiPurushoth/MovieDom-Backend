@@ -14,6 +14,19 @@ router.get('/',async(req,res)=>{
    }
    
 })
+
+router.get('/makeAdmin/:id',async(req,res)=>{
+   try{
+      const user = await User.findById(req.params.id)
+      user.role='admin'
+      const u1 = await user.save()
+      res.json(u1)
+   }
+   catch(err){
+       res.send('error' + err)
+   }
+   
+})
 router.get('/one/:id',async(req,res)=>{
    try{
       const user = await User.findById(req.params.id)
@@ -31,6 +44,7 @@ router.get('/list',async(req,res)=>{
       for(let item of user)
       {
          let obj={
+            id:item._id,
             name:item.name,
             email:item.email,
             phone:item.phone

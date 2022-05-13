@@ -68,6 +68,16 @@ router.get('/all',async(req,res)=>{
     
 })
 
+router.get('/delete/:id',async(req,res)=>{
+    try{
+       const cinema = await Cinema.findByIdAndDelete(req.params.id)
+       res.json(cinema)
+    }
+    catch(err){
+        res.send('error' + err)
+    }
+    
+})
 
 
 router.get('/list/:movieId',verifytoken,async(req,res)=>{
