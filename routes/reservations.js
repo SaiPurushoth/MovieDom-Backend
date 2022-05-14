@@ -61,6 +61,7 @@ router.get('/details/:userId',verifytoken,async(req,res)=>{
 })
 router.post('/book/:theaterId/:userId',verifytoken,async(req,res)=>{
     const cinemas= await Cinema.find({'_id':req.params.theaterId})
+
      let ticketPrice
      const userId=req.params.userId
      let movieId

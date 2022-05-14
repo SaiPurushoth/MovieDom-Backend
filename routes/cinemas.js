@@ -4,6 +4,7 @@ const router = express.Router()
 const  jwt= require('jsonwebtoken')
 const Cinema= require('../models/cinema')
 const Movie = require('../models/movie')
+const Reservation = require('../models/reservation')
 function verifytoken(req,res,next){
     if(!req.headers.authorization){
         return req.status(401).send('unauthorized user')
@@ -73,7 +74,13 @@ router.get('/all',async(req,res)=>{
 
 router.get('/delete/:id',async(req,res)=>{
     try{
+        const c1 = await Cinema.findById(req.params.id)
        const cinema = await Cinema.findByIdAndDelete(req.params.id)
+       const reserve = await Reservation.find({'cinemaId':c1._id})
+       for(let item of reserve)
+       {
+           const rs= await Reservation.findByIdAndDelete(item._id)
+       }
        res.json(cinema)
     }
     catch(err){
