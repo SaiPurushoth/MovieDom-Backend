@@ -21,7 +21,11 @@ const customerSchema = new mongoose.Schema(
         type:String,
         default:'guest',
         enum:['guest','admin'],
-        loadClass:true
+        lowercase:true
+    },
+    isVerified:{
+        type:Boolean,
+        default:false
     },
     phone:{
         type:String,
