@@ -6,6 +6,21 @@ const User= require('../models/customer')
 const  jwt= require('jsonwebtoken')
 
 const nodemailer = require('nodemailer');
+function verifytoken(req,res,next){
+   if(!req.headers.authorization){
+       return req.status(401).send('unauthorized user')
+   }
+   let token=req.headers.authorization.split(' ')[1]
+   if(token==='null'){
+       return res.status(401).send('unauthorized user')
+   }
+   let payload = jwt.verify(token,'secretkey')
+   if(!payload){
+       return res.status(401).send('unauthorized user')
+   }
+   req.userId= payload.subject
+   next()
+}
 
 
 router.get('/',async(req,res)=>{
@@ -19,7 +34,7 @@ router.get('/',async(req,res)=>{
    
 })
 
-router.get('/makeAdmin/:id',async(req,res)=>{
+router.get('/makeAdmin/:id',verifytoken,async(req,res)=>{
    try{
       const user = await User.findById(req.params.id)
       user.role='admin'
@@ -31,7 +46,7 @@ router.get('/makeAdmin/:id',async(req,res)=>{
    }
    
 })
-router.get('/one/:id',async(req,res)=>{
+router.get('/one/:id',verifytoken,async(req,res)=>{
    try{
       const user = await User.findById(req.params.id)
       res.json(user)
@@ -222,7 +237,7 @@ res.json({token})
 })
 
 
- router.patch('/update/:id',async(req,res)=>{
+ router.patch('/update/:id',verifytoken,async(req,res)=>{
      try{
      const user =  await User.findById(req.params.id)
 

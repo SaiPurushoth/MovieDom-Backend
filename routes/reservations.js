@@ -33,7 +33,7 @@ router.get('/',async(req,res)=>{
     }
     
 })
-router.get('/list',async(req,res)=>{
+router.get('/list',verifytoken,async(req,res)=>{
     try{
        const reserve = await Reservation.find()
        list=[]

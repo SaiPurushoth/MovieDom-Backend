@@ -30,7 +30,7 @@ router.get('/',async(req,res)=>{
     }
     
 })
-router.get('/list',async(req,res)=>{
+router.get('/list',verifytoken,async(req,res)=>{
     try{
        const movie = await Movie.find()
        list=[]
@@ -58,7 +58,7 @@ router.get('/details/:id',verifytoken,async(req,res)=>{
     
 })
 
-router.post('/register',async(req,res)=>{
+router.post('/register',verifytoken,async(req,res)=>{
     const movie=new Movie(
     {
     title:req.body.title,
