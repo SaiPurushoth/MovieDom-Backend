@@ -3,6 +3,7 @@ const express = require('express')
 const router = express.Router()
 const Movie= require('../models/movie')
 const  jwt= require('jsonwebtoken')
+
 function verifytoken(req,res,next){
     if(!req.headers.authorization){
         return req.status(401).send('unauthorized user')

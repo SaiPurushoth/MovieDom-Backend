@@ -175,8 +175,11 @@ router.get('/verify/:token/:id',async(req,res)=>{
     let payload={
      subject:us._id
     }
-    let token=jwt.sign(payload,'secretkey',{expiresIn:'1h'})
-
+    const data={
+      subject:"refresh"
+   }
+    let token=jwt.sign(payload,'secretkey',{expiresIn:'2h'})
+    let refreshToken=jwt.sign(data,'secretkey',{expiresIn:'24h'})
 
 
     for(let item of us)
@@ -187,7 +190,8 @@ router.get('/verify/:token/:id',async(req,res)=>{
     var obj={
        id:id,
        role:role,
-       token:token
+       token:token,
+       refreshToken:refreshToken
     }
     res.json(obj)
   }catch(err)
@@ -196,6 +200,26 @@ router.get('/verify/:token/:id',async(req,res)=>{
      res.send("error")
   }
  })   
+
+ router.get('/refresh/:token',async(req,res)=>{
+
+const accessToken=req.params.token
+if(accessToken==='null'){
+   return res.status(401).send('unauthorized user')
+}
+let payload = jwt.verify(accessToken,'secretkey')
+if(!payload){
+   return res.status(401).send('unauthorized user')
+}
+const data={
+   subject:"refresh"
+}
+  let token=jwt.sign(data,'secretkey',{expiresIn:'2h'})
+
+
+res.json({token})
+   
+})
 
 
  router.patch('/update/:id',async(req,res)=>{

@@ -33,7 +33,34 @@ router.get('/',async(req,res)=>{
     }
     
 })
+router.get('/list',async(req,res)=>{
+    try{
+       const reserve = await Reservation.find()
+       list=[]
+        for(let item of reserve)
+        {
+        const movie=await Movie.findById(item.movieId)
+        const cinema=await Cinema.findById(item.cinemaId)
+        const user=await User.findById(item.userId)
+          var obj={
+              date:item.date,
+              seats:item.seats,
+              ticketPrice:item.ticketPrice,
+              total:item.total,
+              moviename:movie.title,
+              cinemaname:cinema.name,
+              username:user.name
+          }
+          list.push(obj)
+        }
 
+       res.json(list)
+    }
+    catch(err){
+        res.send('error' + err)
+    }
+    
+})
 router.get('/details/:userId',verifytoken,async(req,res)=>{
     try{
        const reserve = await Reservation.find({'userId':req.params.userId})
