@@ -8,7 +8,7 @@ const  jwt= require('jsonwebtoken')
 const nodemailer = require('nodemailer');
 function verifytoken(req,res,next){
    if(!req.headers.authorization){
-       return req.status(401).send('unauthorized user')
+       return res.status(401).send('unauthorized user')
    }
    let token=req.headers.authorization.split(' ')[1]
    if(token==='null'){
@@ -26,10 +26,10 @@ function verifytoken(req,res,next){
 router.get('/',async(req,res)=>{
    try{
       const user = await User.find()
-      res.json(user)
+      res.status(200).json(user)
    }
    catch(err){
-       res.send('error' + err)
+      res.status(400).json({error:err})
    }
    
 })
@@ -39,20 +39,20 @@ router.get('/makeAdmin/:id',verifytoken,async(req,res)=>{
       const user = await User.findById(req.params.id)
       user.role='admin'
       const u1 = await user.save()
-      res.json(u1)
+      res.status(200).json(u1)
    }
    catch(err){
-       res.send('error' + err)
+      res.status(400).json({error:err})
    }
    
 })
 router.get('/one/:id',verifytoken,async(req,res)=>{
    try{
       const user = await User.findById(req.params.id)
-      res.json(user)
+      res.status(200).json(user)
    }
    catch(err){
-       res.send('error' + err)
+      res.status(400).json({error:err})
    }
    
 })
@@ -70,10 +70,10 @@ router.get('/list',async(req,res)=>{
          }
          list.push(obj)
       }
-      res.json(list)
+      res.status(200).json(list)
    }
    catch(err){
-       res.send('error' + err)
+      res.status(400).json({error:err})
    }
    
 })
@@ -138,10 +138,10 @@ transporter.sendMail(mailConfigurations, function(error, info){
    }
 });
 
-       res.json({obj})
+       res.status(200).json({obj})
     }catch(err)
     {
-        res.send("already a user" + err);
+      res.status(400).json({error:err})
     }
     
     })
@@ -153,14 +153,14 @@ router.get('/verify/:token/:id',async(req,res)=>{
   jwt.verify(token, 'secretkey', async(err, decoded)=>{
    if (err) {
       console.log(err);
-      res.send("Email verification failed,possibly the link is invalid or expired");
+      res.status(400).send("Email verification failed,possibly the link is invalid or expired");
       throw new Error(err);
 
    }
    else {
       user.isVerified=true
       const u1 = await user.save()
-       res.send("Email verifified successfully");
+       res.status(200).send("Email verifified successfully");
    }
 });
 
@@ -184,7 +184,7 @@ router.get('/verify/:token/:id',async(req,res)=>{
     }
    if(verified==false)
    {
-      res.send("error")
+      res.status(400).json({error:"error"})
    }
 
     let payload={
@@ -208,11 +208,11 @@ router.get('/verify/:token/:id',async(req,res)=>{
        token:token,
        refreshToken:refreshToken
     }
-    res.json(obj)
+    res.status(200).json(obj)
   }catch(err)
   {
 
-     res.send("error")
+     res.status(400).json({error:err})
   }
  })   
 
@@ -232,7 +232,7 @@ const data={
   let token=jwt.sign(data,'secretkey',{expiresIn:'2h'})
 
 
-res.json({token})
+res.status(200).json({token})
    
 })
 
@@ -248,10 +248,10 @@ res.json({token})
      user.phone=req.body.phone
      const u1= await user.save()
 
-     res.json(u1)
+     res.status(200).json(u1)
      }
      catch(err){
-        res.send("Enter correct details");
+        rres.status(400).json({error:err})
      }
  })
 

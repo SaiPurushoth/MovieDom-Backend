@@ -9,7 +9,7 @@ const router = express.Router()
 const Reservation= require('../models/reservation')
 function verifytoken(req,res,next){
     if(!req.headers.authorization){
-        return req.status(401).send('unauthorized user')
+        return res.status(401).send('unauthorized user')
     }
     let token=req.headers.authorization.split(' ')[1]
     if(token==='null'){
@@ -26,10 +26,10 @@ function verifytoken(req,res,next){
 router.get('/',async(req,res)=>{
     try{
        const reserve = await Reservation.find()
-       res.json(reserve)
+       res.status(200).json(reserve)
     }
     catch(err){
-        res.send('error' + err)
+        res.status(400).json({error:err})
     }
     
 })
@@ -54,10 +54,10 @@ router.get('/list',verifytoken,async(req,res)=>{
           list.push(obj)
         }
 
-       res.json(list)
+       res.status(200).json(list)
     }
     catch(err){
-        res.send('error' + err)
+        res.status(400).json({error:err})
     }
     
 })
@@ -79,10 +79,10 @@ router.get('/details/:userId',verifytoken,async(req,res)=>{
       }
      list.push(obj)
     }
-      res.send(list)
+      res.status(200).json(list)
     }
     catch(err){
-        res.send('error' + err)
+        res.status(400).json({error:err})
     }
     
 })
@@ -120,7 +120,7 @@ router.post('/book/:theaterId/:userId',verifytoken,async(req,res)=>{
             const r2=await item.save()
             }
             else{
-                res.send("Booking over"); 
+                res.status(400).json({error:"booking over"})
             }
         }   
 
@@ -141,10 +141,10 @@ router.post('/book/:theaterId/:userId',verifytoken,async(req,res)=>{
 
       }
 
-      res.json(obj)
+      res.status(200).json(obj)
     }catch(err)
     {
-        res.send("enter data corectly" + err);
+        res.status(400).json({error:err})
     }
     
     })
@@ -162,10 +162,10 @@ router.post('/book/:theaterId/:userId',verifytoken,async(req,res)=>{
             }
  
         }
-          res.send(list)
+          res.status(200).json(list)
         }
         catch(err){
-            res.send('error' + err)
+            res.status(400).json({error:err})
         }
         
     })

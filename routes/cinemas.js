@@ -7,7 +7,7 @@ const Movie = require('../models/movie')
 const Reservation = require('../models/reservation')
 function verifytoken(req,res,next){
     if(!req.headers.authorization){
-        return req.status(401).send('unauthorized user')
+        return res.status(401).send('unauthorized user')
     }
     let token=req.headers.authorization.split(' ')[1]
     if(token==='null'){
@@ -35,10 +35,10 @@ function compare( a, b ) {
   router.get('/',async(req,res)=>{
     try{
        const cinema = await Cinema.find()
-       res.json(cinema)
+       res.status(200).json(cinema)
     }
     catch(err){
-        res.send('error' + err)
+        res.status(400).json({error:err})
     }
     
 })
@@ -65,10 +65,10 @@ router.get('/all',async(req,res)=>{
     list.push(obj)
        }
 
-       res.json(list)
+       res.status(200).json(list)
     }
     catch(err){
-        res.send('error' + err)
+        res.status(400).json({error:err})
     }
     
 })
@@ -82,10 +82,10 @@ router.get('/delete/:id',async(req,res)=>{
        {
            const rs= await Reservation.findByIdAndDelete(item._id)
        }
-       res.json(cinema)
+       res.status(200).json(cinema)
     }
     catch(err){
-        res.send('error' + err)
+        res.status(400).json({error:err})
     }
     
 })
@@ -121,21 +121,21 @@ router.get('/list/:movieId',verifytoken,async(req,res)=>{
        } 
        
 
-       res.json(theaters)
+       res.status(200).json(theaters)
 
     }
     catch(err){
-        res.send('error' + err)
+        res.status(400).json({error:err})
     }
 })
 
 router.get('/:id',verifytoken,async(req,res)=>{
     try{
        const cinema = await Cinema.findById(req.params.id)
-       res.json(cinema)
+       res.status(200).json(cinema)
     }
     catch(err){
-        res.send('error' + err)
+        res.status(400).json({error:err})
     }
     
 })
@@ -162,10 +162,10 @@ router.patch('/update/:id',async(req,res)=>{
     cinema.seats=seats
     const c1= await cinema.save()
 
-    res.json(c1)
+    res.status(200).json(c1)
     }
     catch(err){
-       res.send("Enter correct details");
+        res.status(400).json({error:err})
     }
 })
 router.post('/register',verifytoken,async(req,res)=>{
@@ -193,10 +193,10 @@ router.post('/register',verifytoken,async(req,res)=>{
     })
     try{
       const c1= await cinema.save()
-      res.json(c1)
+      res.status(200).json(c1)
     }catch(err)
     {
-        res.send("enter data corectly" + err);
+        res.status(400).json({error:err})
     }
     
     })
@@ -234,11 +234,11 @@ router.post('/register',verifytoken,async(req,res)=>{
            } 
            
 
-           res.json(theaters)
+           res.status(200).json(theaters)
 
         }
         catch(err){
-            res.send('error' + err)
+            res.status(400).json({error:err})
         }
 
         
@@ -276,11 +276,11 @@ router.post('/register',verifytoken,async(req,res)=>{
            } 
            
 
-           res.json(theaters)
+           res.status(200).json(theaters)
 
         }
         catch(err){
-            res.send('error' + err)
+            res.status(400).json({error:err})
         }
 
         
@@ -318,11 +318,11 @@ router.post('/register',verifytoken,async(req,res)=>{
            } 
            
 
-           res.json(theaters)
+           res.status(200).json(theaters)
 
         }
         catch(err){
-            res.send('error' + err)
+            res.status(400).json({error:err})
         }
 
         

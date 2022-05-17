@@ -6,7 +6,7 @@ const  jwt= require('jsonwebtoken')
 
 function verifytoken(req,res,next){
     if(!req.headers.authorization){
-        return req.status(401).send('unauthorized user')
+        return res.status(401).send('unauthorized user')
     }
     let token=req.headers.authorization.split(' ')[1]
     if(token==='null'){
@@ -23,10 +23,10 @@ function verifytoken(req,res,next){
 router.get('/',async(req,res)=>{
     try{
        const movie = await Movie.find()
-       res.json(movie)
+       res.status(200).json(movie)
     }
     catch(err){
-        res.send('error' + err)
+        res.status(400).json({error:err})
     }
     
 })
@@ -39,10 +39,10 @@ router.get('/list',verifytoken,async(req,res)=>{
 
           list.push(item.title)
        }
-       res.json(list)
+       res.status(200).json(list)
     }
     catch(err){
-        res.send('error' + err)
+        res.status(400).json({error:err})
     }
     
 })
@@ -50,10 +50,10 @@ router.get('/list',verifytoken,async(req,res)=>{
 router.get('/details/:id',verifytoken,async(req,res)=>{
     try{
        const movie = await Movie.findById(req.params.id)
-       res.json(movie)
+       res.status(200).json(movie)
     }
     catch(err){
-        res.send('error' + err)
+        res.status(400).json({error:err})
     }
     
 })
@@ -73,10 +73,10 @@ router.post('/register',verifytoken,async(req,res)=>{
    })
     try{
       const m1= await movie.save()
-      res.json(m1)
+      res.status(200).json(m1)
     }catch(err)
     {
-        res.send("enter data coorectly" + err);
+        res.status(400).json({error:err})
     }
     
     })
@@ -97,10 +97,10 @@ router.post('/register',verifytoken,async(req,res)=>{
         
 
         const u1= await movie.save()
-        res.json(u1)
+        res.status(200).json(u1)
         }
         catch(err){
-           res.send("Enter correct details");
+            res.status(400).json({error:err})
         }
     })
 
