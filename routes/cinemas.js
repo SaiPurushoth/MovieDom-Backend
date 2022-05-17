@@ -59,7 +59,8 @@ router.get('/all',async(req,res)=>{
     movieName:movie.title,
     image:item.image,
     rows:item.rows,
-    columns:item.columns
+    columns:item.columns,
+    date:item.date
     }
     list.push(obj)
        }
