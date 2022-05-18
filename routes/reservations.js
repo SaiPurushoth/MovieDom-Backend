@@ -33,6 +33,21 @@ router.get('/',async(req,res)=>{
     }
     
 })
+
+router.get('/delete/:id',async(req,res)=>{
+    try{
+        const r1=await Reservation.findById(req.params.id)
+        const c1=await Cinema.findById(r1.cinemaId)
+        c1.seatsAvailability=c1.seatsAvailability+r1.seats.length
+        const c2 = await c1.save()
+       const reserve = await Reservation.findByIdAndDelete(req.params.id)
+       res.status(200).json(reserve)
+    }
+    catch(err){
+        res.status(400).json({error:err})
+    }
+    
+})
 router.get('/list',verifytoken,async(req,res)=>{
     try{
        const reserve = await Reservation.find()
@@ -70,6 +85,7 @@ router.get('/details/:userId',verifytoken,async(req,res)=>{
        const movie= await Movie.findById(item.movieId)
        const cinema=await Cinema.findById(item.cinemaId)
       var obj={
+          id:item._id,
           date:item.date,
           total:item.total,
           seats:item.seats,
