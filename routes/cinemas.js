@@ -43,7 +43,7 @@ function compare( a, b ) {
     
 })
 
-router.get('/all',async(req,res)=>{
+router.get('/all',verifytoken,async(req,res)=>{
     try{
        const cinema = await Cinema.find()
        list=[]
@@ -73,7 +73,7 @@ router.get('/all',async(req,res)=>{
     
 })
 
-router.get('/delete/:id',async(req,res)=>{
+router.delete('/delete/:id',verifytoken,async(req,res)=>{
     try{
         const c1 = await Cinema.findById(req.params.id)
        const cinema = await Cinema.findByIdAndDelete(req.params.id)
@@ -140,7 +140,7 @@ router.get('/:id',verifytoken,async(req,res)=>{
     
 })
 
-router.patch('/update/:id',async(req,res)=>{
+router.patch('/update/:id',verifytoken,async(req,res)=>{
     try{
     const cinema =  await Cinema.findById(req.params.id)
     let title=req.body.movie
@@ -155,7 +155,7 @@ router.patch('/update/:id',async(req,res)=>{
     cinema.ticketPrice=req.body.ticketPrice,
     cinema.rows=rows,
     cinema.columns=columns,
-    cinema.movie=req.body.movie,
+    cinema.movieId=item._id
     cinema.startAt=req.body.startAt,
     cinema.date=req.body.date,
     cinema.image=req.body.image

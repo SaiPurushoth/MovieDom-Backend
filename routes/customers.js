@@ -23,16 +23,16 @@ function verifytoken(req,res,next){
 }
 
 
-router.get('/',async(req,res)=>{
-   try{
-      const user = await User.find()
-      res.status(200).json(user)
-   }
-   catch(err){
-      res.status(400).json({error:err})
-   }
+// router.get('/',async(req,res)=>{
+//    try{
+//       const user = await User.find()
+//       res.status(200).json(user)
+//    }
+//    catch(err){
+//       res.status(400).json({error:err})
+//    }
    
-})
+// })
 
 router.get('/makeAdmin/:id',verifytoken,async(req,res)=>{
    try{
@@ -56,7 +56,7 @@ router.get('/one/:id',verifytoken,async(req,res)=>{
    }
    
 })
-router.get('/list',async(req,res)=>{
+router.get('/list',verifytoken,async(req,res)=>{
    try{
       const user = await User.find({'role':'guest'})
       list=[]
@@ -81,13 +81,15 @@ router.get('/list',async(req,res)=>{
 
 router.post('/register',async(req,res)=>{
     const email=req.body.email
+    const role=req.body.role
     const user=new User(
     {
     name:req.body.name,
     email:req.body.email,
     password:req.body.password,
-    phone:req.body.phone  
-    })
+    phone:req.body.phone  ,
+    role:role
+    }) 
 
 
     try{
@@ -193,7 +195,7 @@ router.get('/verify/:token/:id',async(req,res)=>{
     const data={
       subject:"refresh"
    }
-    let token=jwt.sign(payload,'secretkey',{expiresIn:'2h'})
+    let token=jwt.sign(payload,'secretkey',{expiresIn:'60s'})
     let refreshToken=jwt.sign(data,'secretkey',{expiresIn:'24h'})
 
 
@@ -229,7 +231,7 @@ if(!payload){
 const data={
    subject:"refresh"
 }
-  let token=jwt.sign(data,'secretkey',{expiresIn:'2h'})
+  let token=jwt.sign(data,'secretkey',{expiresIn:'60s'})
 
 
 res.status(200).json({token})

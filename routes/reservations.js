@@ -34,7 +34,7 @@ router.get('/',async(req,res)=>{
     
 })
 
-router.get('/delete/:id',async(req,res)=>{
+router.delete('/delete/:id',verifytoken,async(req,res)=>{
     try{
         const r1=await Reservation.findById(req.params.id)
         const c1=await Cinema.findById(r1.cinemaId)
