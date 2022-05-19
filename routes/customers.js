@@ -125,7 +125,7 @@ const mailConfigurations = {
     text: `Hi! There, You have recently visited 
            our website and entered your email.
            Please follow the given link to verify your email
-           http://localhost:9000/users/verify/${token}/${id} 
+           http://3.108.250.99:9000/users/verify/${token}/${id} 
            Thanks`
       
 };
@@ -195,7 +195,7 @@ router.get('/verify/:token/:id',async(req,res)=>{
     const data={
       subject:"refresh"
    }
-    let token=jwt.sign(payload,'secretkey',{expiresIn:'60s'})
+    let token=jwt.sign(payload,'secretkey',{expiresIn:'2h'})
     let refreshToken=jwt.sign(data,'secretkey',{expiresIn:'24h'})
 
 
@@ -231,7 +231,7 @@ if(!payload){
 const data={
    subject:"refresh"
 }
-  let token=jwt.sign(data,'secretkey',{expiresIn:'60s'})
+  let token=jwt.sign(data,'secretkey',{expiresIn:'2h'})
 
 
 res.status(200).json({token})
