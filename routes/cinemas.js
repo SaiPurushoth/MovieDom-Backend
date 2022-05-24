@@ -187,6 +187,13 @@ router.patch('/update/:id',enhance,async(req,res)=>{
     }
 })
 router.post('/register',enhance,async(req,res)=>{
+    const ctest = await Cinema.find({$and:[{'name':req.body.name},{'date':req.body.date},{'startAt':req.body.startAt}]})
+    if(ctest.length!=0)
+    {
+        res.status(400).json({error:"already exist"})
+    }
+    else
+    {
     let title=req.body.movie
     const item=await Movie.findOne({title})
     let rows=req.body.rows
@@ -216,7 +223,7 @@ router.post('/register',enhance,async(req,res)=>{
     {
         res.status(400).json({error:err})
     }
-    
+}
     })
 
 

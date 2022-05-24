@@ -50,6 +50,5 @@ movieId:{
       type:String,
   }
 })
-
 const Cinema = mongoose.model('Cinema',cinemaSchema)
 module.exports=Cinema
