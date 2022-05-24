@@ -20,6 +20,21 @@ function verifytoken(req,res,next){
     next()
 }
 
+function enhance(req,res,next){
+    if(!req.headers.authorization){
+        return res.status(401).send('unauthorized user')
+    }
+    let token=req.headers.authorization.split(' ')[1]
+    if(token==='null'){
+        return res.status(401).send('unauthorized user')
+    }
+    let payload = jwt.verify(token,'secretkey')
+    if(!payload || payload.role=='guest'){
+        return res.status(401).send('unauthorized user')
+    }
+    req.userId= payload.subject
+    next()
+ }
 router.get('/',async(req,res)=>{
     try{
        const movie = await Movie.find()
@@ -58,7 +73,7 @@ router.get('/details/:id',verifytoken,async(req,res)=>{
     
 })
 
-router.post('/register',verifytoken,async(req,res)=>{
+router.post('/register',enhance,async(req,res)=>{
     const movie=new Movie(
     {
     title:req.body.title,
@@ -81,7 +96,7 @@ router.post('/register',verifytoken,async(req,res)=>{
     
     })
 
-    router.patch('/update/:id',verifytoken,async(req,res)=>{
+    router.patch('/update/:id',enhance,async(req,res)=>{
         try{
         const movie =  await Movie.findById(req.params.id)
         

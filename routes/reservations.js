@@ -22,7 +22,21 @@ function verifytoken(req,res,next){
     req.userId= payload.subject
     next()
 }
-
+function enhance(req,res,next){
+    if(!req.headers.authorization){
+        return res.status(401).send('unauthorized user')
+    }
+    let token=req.headers.authorization.split(' ')[1]
+    if(token==='null'){
+        return res.status(401).send('unauthorized user')
+    }
+    let payload = jwt.verify(token,'secretkey')
+    if(!payload || payload.role=='guest'){
+        return res.status(401).send('unauthorized user')
+    }
+    req.userId= payload.subject
+    next()
+ }
 router.get('/',async(req,res)=>{
     try{
        const reserve = await Reservation.find()
@@ -48,7 +62,7 @@ router.delete('/delete/:id',verifytoken,async(req,res)=>{
     }
     
 })
-router.get('/list',verifytoken,async(req,res)=>{
+router.get('/list',enhance,async(req,res)=>{
     try{
        const reserve = await Reservation.find()
        list=[]

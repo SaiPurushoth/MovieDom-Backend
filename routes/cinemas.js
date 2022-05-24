@@ -21,7 +21,21 @@ function verifytoken(req,res,next){
     next()
 }
 
-
+function enhance(req,res,next){
+    if(!req.headers.authorization){
+        return res.status(401).send('unauthorized user')
+    }
+    let token=req.headers.authorization.split(' ')[1]
+    if(token==='null'){
+        return res.status(401).send('unauthorized user')
+    }
+    let payload = jwt.verify(token,'secretkey')
+    if(!payload || payload.role=='guest'){
+        return res.status(401).send('unauthorized user')
+    }
+    req.userId= payload.subject
+    next()
+ }
 function compare( a, b ) {
     if ( a.seatsAvailability > b.seatsAvailability ){
       return -1;
@@ -73,7 +87,7 @@ router.get('/all',verifytoken,async(req,res)=>{
     
 })
 
-router.delete('/delete/:id',verifytoken,async(req,res)=>{
+router.delete('/delete/:id',enhance,async(req,res)=>{
     try{
         const c1 = await Cinema.findById(req.params.id)
        const cinema = await Cinema.findByIdAndDelete(req.params.id)
@@ -140,7 +154,7 @@ router.get('/:id',verifytoken,async(req,res)=>{
     
 })
 
-router.patch('/update/:id',verifytoken,async(req,res)=>{
+router.patch('/update/:id',enhance,async(req,res)=>{
     try{
     const cinema =  await Cinema.findById(req.params.id)
     let title=req.body.movie
@@ -172,7 +186,7 @@ router.patch('/update/:id',verifytoken,async(req,res)=>{
         res.status(400).json({error:err})
     }
 })
-router.post('/register',verifytoken,async(req,res)=>{
+router.post('/register',enhance,async(req,res)=>{
     let title=req.body.movie
     const item=await Movie.findOne({title})
     let rows=req.body.rows

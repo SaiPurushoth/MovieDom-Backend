@@ -22,19 +22,33 @@ function verifytoken(req,res,next){
    next()
 }
 
-
-// router.get('/',async(req,res)=>{
-//    try{
-//       const user = await User.find()
-//       res.status(200).json(user)
-//    }
-//    catch(err){
-//       res.status(400).json({error:err})
-//    }
+function enhance(req,res,next){
+   if(!req.headers.authorization){
+       return res.status(401).send('unauthorized user')
+   }
+   let token=req.headers.authorization.split(' ')[1]
+   if(token==='null'){
+       return res.status(401).send('unauthorized user')
+   }
+   let payload = jwt.verify(token,'secretkey')
+   if(!payload || payload.role=='guest'){
+       return res.status(401).send('unauthorized user')
+   }
+   req.userId= payload.subject
+   next()
+}
+router.get('/',async(req,res)=>{
+   try{
+      const user = await User.find()
+      res.status(200).json(user)
+   }
+   catch(err){
+      res.status(400).json({error:err})
+   }
    
-// })
+})
 
-router.get('/makeAdmin/:id',verifytoken,async(req,res)=>{
+router.get('/makeAdmin/:id',enhance,async(req,res)=>{
    try{
       const user = await User.findById(req.params.id)
       user.role='admin'
@@ -190,12 +204,14 @@ router.get('/verify/:token/:id',async(req,res)=>{
    }
 
     let payload={
-     subject:us._id
+     id:id,
+     role:role
     }
-    const data={
-      subject:"refresh"
+    let data={
+      id:id,
+      role:role
    }
-    let token=jwt.sign(payload,'secretkey',{expiresIn:'2h'})
+    let token=jwt.sign(payload,'secretkey',{expiresIn:'1h'})
     let refreshToken=jwt.sign(data,'secretkey',{expiresIn:'24h'})
 
 
@@ -205,8 +221,6 @@ router.get('/verify/:token/:id',async(req,res)=>{
          role=item.role
     }
     var obj={
-       id:id,
-       role:role,
        token:token,
        refreshToken:refreshToken
     }
@@ -225,13 +239,15 @@ if(accessToken==='null'){
    return res.status(401).send('unauthorized user')
 }
 let payload = jwt.verify(accessToken,'secretkey')
+let data={
+   id:payload.id,
+   role:payload.role
+}
 if(!payload){
    return res.status(401).send('unauthorized user')
 }
-const data={
-   subject:"refresh"
-}
-  let token=jwt.sign(data,'secretkey',{expiresIn:'2h'})
+
+  let token=jwt.sign(data,'secretkey',{expiresIn:'1h'})
 
 
 res.status(200).json({token})
@@ -253,7 +269,7 @@ res.status(200).json({token})
      res.status(200).json(u1)
      }
      catch(err){
-        rres.status(400).json({error:err})
+        res.status(400).json({error:err})
      }
  })
 
