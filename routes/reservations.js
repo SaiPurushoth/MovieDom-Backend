@@ -166,9 +166,9 @@ router.post('/book/:theaterId/:userId',verifytoken,async(req,res)=>{
     })
 
 
-    router.get('/booked/:theaterId',verifytoken,async(req,res)=>{
+    router.get('/booked/:theaterId/:date',verifytoken,async(req,res)=>{
         try{
-           const reserve = await Reservation.find({'cinemaId':req.params.theaterId})
+           const reserve = await Reservation.find({$and:[{'cinemaId':req.params.theaterId},{'date':req.params.date}]})
            let list=[]
            for(let item of reserve)
            {

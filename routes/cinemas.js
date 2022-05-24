@@ -150,16 +150,20 @@ router.patch('/update/:id',verifytoken,async(req,res)=>{
     let columns=req.body.columns
     columns=columns.replace(/\[|\]/g,'').split(',')
     const seats=rows.length * columns.length
-    cinema.name=req.body.name,
-    cinema.city=req.body.city,
-    cinema.ticketPrice=req.body.ticketPrice,
-    cinema.rows=rows,
-    cinema.columns=columns,
+    cinema.name=req.body.name
+    cinema.city=req.body.city
+    cinema.ticketPrice=req.body.ticketPrice
+    cinema.rows=rows
+    cinema.columns=columns
     cinema.movieId=item._id
-    cinema.startAt=req.body.startAt,
-    cinema.date=req.body.date,
+    cinema.startAt=req.body.startAt
     cinema.image=req.body.image
     cinema.seats=seats
+    if(cinema.date!=req.body.date)
+    {
+      cinema.seatsAvailability=seats
+    }
+    cinema.date=req.body.date
     const c1= await cinema.save()
 
     res.status(200).json(c1)
