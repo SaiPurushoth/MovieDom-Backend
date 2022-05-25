@@ -37,21 +37,33 @@ function enhance(req,res,next){
    req.userId= payload.subject
    next()
 }
-router.get('/',async(req,res)=>{
+// router.get('/',async(req,res)=>{
+//    try{
+//       const user = await User.find()
+//       res.status(200).json(user)
+//    }
+//    catch(err){
+//       res.status(400).json({error:err})
+//    }
+   
+// })
+
+router.get('/makeAdmin/:id',enhance,async(req,res)=>{
    try{
-      const user = await User.find()
-      res.status(200).json(user)
+      const user = await User.findById(req.params.id)
+      user.role='admin'
+      const u1 = await user.save()
+      res.status(200).json(u1)
    }
    catch(err){
       res.status(400).json({error:err})
    }
    
 })
-
-router.get('/makeAdmin/:id',enhance,async(req,res)=>{
+router.get('/deleteAdmin/:id',enhance,async(req,res)=>{
    try{
       const user = await User.findById(req.params.id)
-      user.role='admin'
+      user.role='guest'
       const u1 = await user.save()
       res.status(200).json(u1)
    }
@@ -70,14 +82,16 @@ router.get('/one/:id',verifytoken,async(req,res)=>{
    }
    
 })
+
 router.get('/list',verifytoken,async(req,res)=>{
    try{
-      const user = await User.find({'role':'guest'})
+      const user = await User.find()
       list=[]
       for(let item of user)
       {
          let obj={
             id:item._id,
+            role:item.role,
             name:item.name,
             email:item.email,
             phone:item.phone

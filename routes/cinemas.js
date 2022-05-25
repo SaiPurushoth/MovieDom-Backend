@@ -157,6 +157,25 @@ router.get('/:id',verifytoken,async(req,res)=>{
 router.patch('/update/:id',enhance,async(req,res)=>{
     try{
     const cinema =  await Cinema.findById(req.params.id)
+    const ctest = await Cinema.find({$and:[{'name':req.body.name},{'date':req.body.date},{'startAt':req.body.startAt}]})
+    if(ctest.length>1)
+    {
+        res.status(400).json({error:"already exist"})
+    }
+    else{
+        let id1,id2;
+    for(let item of ctest)
+    {
+      id1=item._id.toString()
+    }
+
+     id2=cinema._id.toString()
+    if(ctest.length==1 && id1!=id2 )
+    {
+        res.status(400).json({error:"already exist"}) 
+    }
+    else
+    {
     let title=req.body.movie
     const item=await Movie.findOne({title})
     let rows=req.body.rows
@@ -182,9 +201,12 @@ router.patch('/update/:id',enhance,async(req,res)=>{
 
     res.status(200).json(c1)
     }
+}
+}
     catch(err){
         res.status(400).json({error:err})
     }
+
 })
 router.post('/register',enhance,async(req,res)=>{
     const ctest = await Cinema.find({$and:[{'name':req.body.name},{'date':req.body.date},{'startAt':req.body.startAt}]})
