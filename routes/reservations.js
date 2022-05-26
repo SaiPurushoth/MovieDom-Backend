@@ -51,9 +51,13 @@ router.get('/',async(req,res)=>{
 router.delete('/delete/:id',verifytoken,async(req,res)=>{
     try{
         const r1=await Reservation.findById(req.params.id)
-        const c1=await Cinema.findById(r1.cinemaId)
-        c1.seatsAvailability=c1.seatsAvailability+r1.seats.length
-        const c2 = await c1.save()
+        date=r1.date.toISOString().substring(0,10)
+        const c1=await Cinema.find({$and:[{'cinemaId':r1.cinemaId},{'date':date}]})
+        for(let item of c1)
+        {
+        item.seatsAvailability=item.seatsAvailability+r1.seats.length
+        const c2 = await item.save()
+        }
        const reserve = await Reservation.findByIdAndDelete(req.params.id)
        res.status(200).json(reserve)
     }
